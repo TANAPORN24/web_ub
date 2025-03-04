@@ -4,8 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ศูนย์อุตุนิยมวิทยาภาคตะวันออกเฉียงเหนือตอนล่าง</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
-    <h1>"1212"</h1>
+
+    <div id="map"></div>
+
+    <!-- ✅ กล่องควบคุม -->
+    <div class="controls">
+        <label><input type="checkbox" id="toggleProvince" checked> แสดง Province</label>
+        <label><input type="checkbox" id="toggleDistrict" checked> แสดง District</label>
+        <button id="toggleRadar">หยุด Loop ภาพเรดาร์</button>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+
 </body>
 </html>
