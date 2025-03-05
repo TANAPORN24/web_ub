@@ -1,5 +1,5 @@
-// กำหนดแผนที่และศูนย์กลาง
-var map = L.map('map').setView([17.156253703430906, 104.13320232083736], 8);
+/* ✅ ปักแมพเริ่มต้นที่ตำแหน่งที่กำหนด */
+var map = L.map('map').setView([15.42341669724746, 103.56871060013817], 8);
 
 // เพิ่ม Base Map
 var baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -45,7 +45,7 @@ document.getElementById("toggleRadar").addEventListener("click", function() {
 var provinceLayer, districtLayer;
 
 // โหลดข้อมูลจังหวัด
-fetch('Geojson/province.geojson')
+fetch('Geojson/province.geojson') 
     .then(response => response.json())
     .then(data => {
         console.log("Province GeoJSON Loaded:", data);
@@ -54,7 +54,8 @@ fetch('Geojson/province.geojson')
                 color: "#ff7800", weight: 2, fillOpacity: 0.2
             },
             onEachFeature: function (feature, layer) {
-                layer.bindTooltip(feature.properties.ADM1_TH);
+                let popupContent = `<b>จังหวัด</b> ${feature.properties.ADM1_TH}`;
+                layer.bindTooltip(popupContent);
                 layer.on('mouseover', function () {
                     layer.setStyle({ color: "#ff0000", weight: 4 });
                 });
@@ -66,6 +67,7 @@ fetch('Geojson/province.geojson')
     })
     .catch(error => console.error("Error loading province GeoJSON:", error));
 
+
 // โหลดข้อมูลอำเภอ
 fetch('Geojson/output_filtered.geojson')
     .then(response => response.json())
@@ -76,7 +78,8 @@ fetch('Geojson/output_filtered.geojson')
                 color: "#0078ff", weight: 1, fillOpacity: 0.1
             },
             onEachFeature: function (feature, layer) {
-                layer.bindTooltip(feature.properties.ADM2_TH);
+                let popupContent = `<b>อำเภอ</b> ${feature.properties.ADM2_TH}<br><b>จังหวัด</b> ${feature.properties.ADM1_TH}`;
+                layer.bindTooltip(popupContent);
                 layer.on('mouseover', function () {
                     layer.setStyle({ color: "#0000ff", weight: 3 });
                 });
@@ -87,6 +90,7 @@ fetch('Geojson/output_filtered.geojson')
         }).addTo(map);
     })
     .catch(error => console.error("Error loading district GeoJSON:", error));
+
 
 // ✅ ตรวจสอบว่ากล่องควบคุมถูกโหลดหรือไม่
 console.log("Loading controls...");
