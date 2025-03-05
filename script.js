@@ -12,13 +12,13 @@ fetch('output/') // ขอรายการไฟล์จากโฟลเด
     .then(response => response.text())
     .then(text => {
         // ใช้ Regular Expression หาไฟล์ PNG
-        var files = text.match(/skn240_HQ_latest \(\d+\)\.png/g);
-        if (files) {
-            radarImages = files.map(file => `output/${file}`);
-            initializeRadarLoop();
-        } else {
-            console.error("No radar images found in output folder.");
-        }
+        // var files = text.match(/\(\d+\)\.png/g);
+        // if (files) {
+        //     radarImages = files.map(file => `output/${file}`);
+        //     initializeRadarLoop();
+        // } else {
+        //     console.error("No radar images found in output folder.");
+        // }
     })
     .catch(error => console.error("Error loading radar images list:", error));
 
