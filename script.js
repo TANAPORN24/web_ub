@@ -6,29 +6,19 @@ var baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// ✅ **ดึงรายชื่อไฟล์ภาพเรดาร์จากโฟลเดอร์ output/** โดยไม่ใช้ JSON
+// ✅ **ดึงรายชื่อไฟล์ภาพเรดาร์จากโฟลเดอร์ output/**
 var radarImages = [];
-fetch('output/') // ขอรายการไฟล์จากโฟลเดอร์
-    .then(response => response.text())
-    .then(text => {
-        // ใช้ Regular Expression หาไฟล์ PNG
-        // var files = text.match(/\(\d+\)\.png/g);
-        // if (files) {
-        //     radarImages = files.map(file => `output/${file}`);
-        //     initializeRadarLoop();
-        // } else {
-        //     console.error("No radar images found in output folder.");
-        // }
-    })
-    .catch(error => console.error("Error loading radar images list:", error));
+for (var i = 1; i <= 12; i++) {
+    radarImages.push(`output/${i}.png`);
+}
 
 var currentIndex = 0;
 var isLooping = true;
 
 // ✅ **ปรับตำแหน่ง Bounding Box ให้ถูกต้อง**
 var radarBounds = [
-    [17.156253703430906 + 3, 104.13320232083736 - 3],
-    [17.156253703430906 - 3, 104.13320232083736 + 3]
+    [17.156253703430906 + 5, 104.13320232083736 - 5],
+    [17.156253703430906 - 5, 104.13320232083736 + 5]
 ];
 
 var radarLayer;
@@ -45,17 +35,39 @@ function initializeRadarLoop() {
     }, 1000);
 }
 
-// // ✅ **เพิ่มภาพเรดาร์เป็นเลเยอร์แรก**
-// var radarLayer = L.imageOverlay(radarImages[currentIndex], radarBounds).addTo(map);
 
-// // ✅ **ใช้ setUrl() เพื่อเปลี่ยนภาพแทนการสร้างเลเยอร์ใหม่**
-// var radarInterval = setInterval(() => {
-//     if (isLooping) {
-//         currentIndex = (currentIndex + 1) % radarImages.length;
-//         console.log("Switching Radar Image:", radarImages[currentIndex]);
-//         radarLayer.setUrl(radarImages[currentIndex]);
-//     }
-// }, 1000);
+// ✅ **ปรับตำแหน่ง Bounding Box ให้ถูกต้อง**
+var radarBounds = [
+    [17.156253703430906 + 5, 104.13320232083736 - 5],
+    [17.156253703430906 - 5, 104.13320232083736 + 5]
+];
+
+var radarLayer;
+function initializeRadarLoop() {
+    if (radarImages.length === 0) return;
+    radarLayer = L.imageOverlay(radarImages[currentIndex], radarBounds).addTo(map);
+
+    setInterval(() => {
+        if (isLooping && radarImages.length > 0) {
+            currentIndex = (currentIndex + 1) % radarImages.length;
+            console.log("Switching Radar Image:", radarImages[currentIndex]);
+            radarLayer.setUrl(radarImages[currentIndex]);
+        }
+    }, 1000);
+}
+
+
+// ✅ **เพิ่มภาพเรดาร์เป็นเลเยอร์แรก**
+var radarLayer = L.imageOverlay(radarImages[currentIndex], radarBounds).addTo(map);
+
+// ✅ **ใช้ setUrl() เพื่อเปลี่ยนภาพแทนการสร้างเลเยอร์ใหม่**
+var radarInterval = setInterval(() => {
+    if (isLooping) {
+        currentIndex = (currentIndex + 1) % radarImages.length;
+        console.log("Switching Radar Image:", radarImages[currentIndex]);
+        radarLayer.setUrl(radarImages[currentIndex]);
+    }
+}, 1000);
 
 // ✅ **ปุ่มเปิด/ปิด Loop ของเรดาร์**
 document.getElementById("toggleRadar").addEventListener("click", function() {
