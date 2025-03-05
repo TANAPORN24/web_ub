@@ -6,13 +6,22 @@ var baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// ✅ **เพิ่มภาพเรดาร์ฝนก่อน GeoJSON เพื่อไม่ให้ถูกซ่อน**
-var radarImages = [
-    'skn240_HQ_latest (1).png',
-    'skn240_HQ_latest (2).png',
-    'skn240_HQ_latest (3).png',
-    'skn240_HQ_latest (4).png'
-];
+// ✅ **ดึงรายชื่อไฟล์ภาพเรดาร์จากโฟลเดอร์ output/** โดยไม่ใช้ JSON
+var radarImages = [];
+fetch('output/') // ขอรายการไฟล์จากโฟลเดอร์
+    .then(response => response.text())
+    .then(text => {
+        // ใช้ Regular Expression หาไฟล์ PNG
+        var files = text.match(/skn240_HQ_latest \(\d+\)\.png/g);
+        if (files) {
+            radarImages = files.map(file => `output/${file}`);
+            initializeRadarLoop();
+        } else {
+            console.error("No radar images found in output folder.");
+        }
+    })
+    .catch(error => console.error("Error loading radar images list:", error));
+
 var currentIndex = 0;
 var isLooping = true;
 
@@ -22,17 +31,31 @@ var radarBounds = [
     [17.156253703430906 - 3, 104.13320232083736 + 3]
 ];
 
-// ✅ **เพิ่มภาพเรดาร์เป็นเลเยอร์แรก**
-var radarLayer = L.imageOverlay(radarImages[currentIndex], radarBounds).addTo(map);
+var radarLayer;
+function initializeRadarLoop() {
+    if (radarImages.length === 0) return;
+    radarLayer = L.imageOverlay(radarImages[currentIndex], radarBounds).addTo(map);
 
-// ✅ **ใช้ setUrl() เพื่อเปลี่ยนภาพแทนการสร้างเลเยอร์ใหม่**
-var radarInterval = setInterval(() => {
-    if (isLooping) {
-        currentIndex = (currentIndex + 1) % radarImages.length;
-        console.log("Switching Radar Image:", radarImages[currentIndex]);
-        radarLayer.setUrl(radarImages[currentIndex]);
-    }
-}, 1000);
+    setInterval(() => {
+        if (isLooping && radarImages.length > 0) {
+            currentIndex = (currentIndex + 1) % radarImages.length;
+            console.log("Switching Radar Image:", radarImages[currentIndex]);
+            radarLayer.setUrl(radarImages[currentIndex]);
+        }
+    }, 1000);
+}
+
+// // ✅ **เพิ่มภาพเรดาร์เป็นเลเยอร์แรก**
+// var radarLayer = L.imageOverlay(radarImages[currentIndex], radarBounds).addTo(map);
+
+// // ✅ **ใช้ setUrl() เพื่อเปลี่ยนภาพแทนการสร้างเลเยอร์ใหม่**
+// var radarInterval = setInterval(() => {
+//     if (isLooping) {
+//         currentIndex = (currentIndex + 1) % radarImages.length;
+//         console.log("Switching Radar Image:", radarImages[currentIndex]);
+//         radarLayer.setUrl(radarImages[currentIndex]);
+//     }
+// }, 1000);
 
 // ✅ **ปุ่มเปิด/ปิด Loop ของเรดาร์**
 document.getElementById("toggleRadar").addEventListener("click", function() {
@@ -44,6 +67,26 @@ document.getElementById("toggleRadar").addEventListener("click", function() {
 // ✅ **โหลดไฟล์ GeoJSON จากโฟลเดอร์ Geojson/** (หลังจากเพิ่มเรดาร์)
 var provinceLayer, districtLayer;
 
+// ฟังก์ชัน Highlight ขอบ Polygon ตอนวางเมาส์
+function highlightFeature(e) {
+    var layer = e.target;
+    layer.setStyle({
+        weight: 3,
+        color: "#ff0000",  // เปลี่ยนเป็นสีแดงตอนวางเมาส์
+        fillOpacity: 0.3
+    });
+}
+
+// ฟังก์ชันคืนค่าการแสดงผลเมื่อเมาส์ออก
+function resetHighlight(e) {
+    var layer = e.target;
+    layer.setStyle({
+        weight: 1, 
+        color: layer.feature.properties.layerType === "province" ? "#ff7800" : "#0078ff", 
+        fillOpacity: 0.1
+    });
+}
+
 // โหลดข้อมูลจังหวัด
 fetch('Geojson/province.geojson') 
     .then(response => response.json())
@@ -54,13 +97,13 @@ fetch('Geojson/province.geojson')
                 color: "#ff7800", weight: 2, fillOpacity: 0.2
             },
             onEachFeature: function (feature, layer) {
+                feature.properties.layerType = "province"; // เพิ่มฟิลด์เพื่อใช้กับ resetHighlight
                 let popupContent = `<b>จังหวัด</b> ${feature.properties.ADM1_TH}`;
                 layer.bindTooltip(popupContent);
-                layer.on('mouseover', function () {
-                    layer.setStyle({ color: "#ff0000", weight: 4 });
-                });
-                layer.on('mouseout', function () {
-                    layer.setStyle({ color: "#ff7800", weight: 2 });
+                
+                layer.on({
+                    mouseover: highlightFeature, // เมื่อวางเมาส์
+                    mouseout: resetHighlight,   // เมื่อออกจาก Polygon
                 });
             }
         }).addTo(map);
@@ -78,20 +121,18 @@ fetch('Geojson/output_filtered.geojson')
                 color: "#0078ff", weight: 1, fillOpacity: 0.1
             },
             onEachFeature: function (feature, layer) {
+                feature.properties.layerType = "district"; // ใช้กับ resetHighlight
                 let popupContent = `<b>อำเภอ</b> ${feature.properties.ADM2_TH}<br><b>จังหวัด</b> ${feature.properties.ADM1_TH}`;
                 layer.bindTooltip(popupContent);
-                layer.on('mouseover', function () {
-                    layer.setStyle({ color: "#0000ff", weight: 3 });
-                });
-                layer.on('mouseout', function () {
-                    layer.setStyle({ color: "#0078ff", weight: 1 });
+
+                layer.on({
+                    mouseover: highlightFeature, // เมื่อวางเมาส์
+                    mouseout: resetHighlight,   // เมื่อออกจาก Polygon
                 });
             }
         }).addTo(map);
     })
     .catch(error => console.error("Error loading district GeoJSON:", error));
-
-
 // ✅ ตรวจสอบว่ากล่องควบคุมถูกโหลดหรือไม่
 console.log("Loading controls...");
 
@@ -133,3 +174,33 @@ document.getElementById("toggleDistrict").addEventListener("change", function() 
         }
     }
 });
+
+// ✅ ฟังก์ชันค้นหาตำแหน่งผู้ใช้และย้ายแผนที่ไปที่พิกัดนั้น
+function locateUser() {
+    if (!navigator.geolocation) {
+        alert("เบราว์เซอร์ของคุณไม่รองรับการระบุตำแหน่ง");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        function (position) {
+            var userLat = position.coords.latitude;
+            var userLon = position.coords.longitude;
+
+            console.log("User Location:", userLat, userLon);
+
+            // ✅ ย้ายแผนที่ไปยังตำแหน่งผู้ใช้
+            map.setView([userLat, userLon], 11);
+
+            // ✅ เพิ่ม Marker แสดงตำแหน่งผู้ใช้
+            L.marker([userLat, userLon]).addTo(map)
+                .bindPopup("คุณอยู่ที่นี่").openPopup();
+        },
+        function () {
+            alert("ไม่สามารถเข้าถึงตำแหน่งของคุณได้");
+        }
+    );
+}
+
+// ✅ เชื่อมปุ่มกับฟังก์ชัน locateUser
+document.getElementById("locateUser").addEventListener("click", locateUser);
