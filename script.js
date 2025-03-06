@@ -15,33 +15,23 @@ for (var i = 1; i <= 12; i++) {
 var currentIndex = 0;
 var isLooping = true;
 
-// ✅ **ปรับตำแหน่ง Bounding Box ให้ถูกต้อง**
+// ✅ พิกัดกึ่งกลางของเรดาร์ (ควรเป็นจุดกลางของภาพ)
+var radarCenter = [17.156253703430906, 104.13320232083736]; 
+
+// ✅ รัศมีของเรดาร์ (240 กม.)
+var radarRadiusKm = 240;
+
+// ✅ คำนวณ Bounding Box โดยใช้ระยะ 240 กม.
+var kmToLat = 1 / 111.32; // 1° ละติจูด ≈ 111.32 กม.
+var kmToLon = 1 / (111.32 * Math.cos(radarCenter[0] * Math.PI / 180)); // ปรับลองจิจูดตามละติจูด
+
+// ✅ คำนวณขอบเขตของเรดาร์ (Bounding Box)
 var radarBounds = [
-    [17.156253703430906 + 5, 104.13320232083736 - 5],
-    [17.156253703430906 - 5, 104.13320232083736 + 5]
+    [radarCenter[0] + (radarRadiusKm * kmToLat), radarCenter[1] - (radarRadiusKm * kmToLon)], // จุดบนซ้าย
+    [radarCenter[0] - (radarRadiusKm * kmToLat), radarCenter[1] + (radarRadiusKm * kmToLon)]  // จุดล่างขวา
 ];
 
-var radarLayer;
-function initializeRadarLoop() {
-    if (radarImages.length === 0) return;
-    radarLayer = L.imageOverlay(radarImages[currentIndex], radarBounds).addTo(map);
-
-    setInterval(() => {
-        if (isLooping && radarImages.length > 0) {
-            currentIndex = (currentIndex + 1) % radarImages.length;
-            console.log("Switching Radar Image:", radarImages[currentIndex]);
-            radarLayer.setUrl(radarImages[currentIndex]);
-        }
-    }, 1000);
-}
-
-
-// ✅ **ปรับตำแหน่ง Bounding Box ให้ถูกต้อง**
-var radarBounds = [
-    [17.156253703430906 + 5, 104.13320232083736 - 5],
-    [17.156253703430906 - 5, 104.13320232083736 + 5]
-];
-
+// ✅ ใช้ bounding box ที่คำนวณได้กับภาพเรดาร์
 var radarLayer;
 function initializeRadarLoop() {
     if (radarImages.length === 0) return;
