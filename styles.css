@@ -4,27 +4,29 @@ body {
 }
 
 #map {
-    width: 100%;         /* กำหนดให้แผนที่กว้างเต็มพื้นที่ */
-    height: 500px;       /* ปรับความสูงให้เหมาะกับภาพที่แนบมา */
-    max-width: 1200px;   /* จำกัดความกว้างสูงสุด */
-    margin: 0 auto;      /* จัดให้อยู่กึ่งกลางของหน้าจอ */
-    border: 2px solid #ccc; /* ใส่กรอบสีเทาอ่อนเพื่อความสวยงาม */
+    width: 100%;
+    height: 500px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border: 2px solid #ccc;
 }
 
-
-/* ✅ ย้ายกล่องควบคุมไปอยู่ทางขวา */
+/* ✅ ปรับตำแหน่งกล่องควบคุม */
 .controls {
     position: absolute;
     top: 10px;
-    right: 10px; 
+    right: 10px;
     background: rgba(255, 255, 255, 0.95);
     padding: 15px;
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     width: 200px;
     z-index: 9999 !important;
-    display: block !important;
     pointer-events: auto;
+}
+
+.controls.hidden {
+    display: none !important;
 }
 
 .controls label, .controls button {
@@ -38,8 +40,9 @@ body {
     margin-right: 5px;
 }
 
+/* ✅ ปุ่มค้นหาตำแหน่งผู้ใช้ */
 #locateUser {
-    background-color: #39972b; /* สีเขียว */
+    background-color: #39972b;
     color: white;
     border: none;
     padding: 10px;
@@ -52,4 +55,25 @@ body {
 #locateUser:hover {
     background-color: #45a049;
 }
+
+/* ✅ สไตล์ Highlight ของ Polygon */
+.highlighted {
+    stroke-width: 3px;
+    stroke: #ff0000;
+    fill-opacity: 0.3;
+}
+
+/* ✅ สไตล์จังหวัดและอำเภอ */
+.province {
+    stroke: #ff7800;
+    stroke-width: 2px;
+    fill-opacity: 0.2;
+}
+
+.district {
+    stroke: #0078ff;
+    stroke-width: 1px;
+    fill-opacity: 0.1;
+}
+
 
