@@ -2,9 +2,34 @@
 var map = L.map('map').setView([15.42341669724746, 103.56871060013817], 8);
 
 // เพิ่ม Base Map
-var baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+// กำหนด Base Layers
+var openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
+});
+
+var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+    attribution: '&copy; Google Maps'
+});
+
+// เพิ่ม OpenStreetMap เป็นค่าเริ่มต้น
+openStreetMap.addTo(map);
+
+// ฟังก์ชันเปิด/ปิด Base Layers
+document.getElementById("toggleOpenStreetMap").addEventListener("change", function() {
+    if (this.checked) {
+        map.addLayer(openStreetMap);
+    } else {
+        map.removeLayer(openStreetMap);
+    }
+});
+
+document.getElementById("toggleGoogleHybrid").addEventListener("change", function() {
+    if (this.checked) {
+        map.addLayer(googleHybrid);
+    } else {
+        map.removeLayer(googleHybrid);
+    }
+});
 
 // ✅ **ดึงรายชื่อไฟล์ภาพเรดาร์จากโฟลเดอร์ output/**
 var radarImages = [];
@@ -13,13 +38,13 @@ for (var i = 1; i <= 12; i++) {
 }
 
 var currentIndex = 0;
-var isLooping = true;
+var isLooping = false;
 
 // ✅ พิกัดกึ่งกลางของเรดาร์ (ควรเป็นจุดกลางของภาพ)
 var radarCenter = [17.156253703430906, 104.13320232083736]; 
 
 // ✅ รัศมีของเรดาร์ (240 กม.)
-var radarRadiusKm = 240;
+var radarRadiusKm = 250;
 
 // ✅ คำนวณ Bounding Box โดยใช้ระยะ 240 กม.
 var kmToLat = 1 / 111.32; // 1° ละติจูด ≈ 111.32 กม.
