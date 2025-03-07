@@ -17,7 +17,7 @@ body {
     top: 10px;
     right: 10px;
     background: rgba(255, 255, 255, 0.95);
-    padding: 15px;
+    padding: 10px;
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     width: 200px;
@@ -29,31 +29,64 @@ body {
     display: none !important;
 }
 
-.controls label, .controls button {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 14px;
+/* ✅ ปรับขนาดปุ่มทั้งหมดให้เท่ากัน */
+.controls button, .custom-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #007bff; /* สีพื้นหลังปุ่ม */
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
     cursor: pointer;
+    width: 100%;
+    text-align: center;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
 }
 
-.controls input[type="checkbox"] {
-    margin-right: 5px;
+/* ✅ ปรับเอฟเฟกต์เมื่อ Hover */
+.controls button:hover, .custom-checkbox:hover {
+    background-color: #0056b3;
 }
 
 /* ✅ ปุ่มค้นหาตำแหน่งผู้ใช้ */
 #locateUser {
     background-color: #39972b;
-    color: white;
-    border: none;
-    padding: 10px;
-    font-size: 14px;
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
 }
 
 #locateUser:hover {
-    background-color: #45a049;
+    background-color: #27602a;
+}
+
+
+/*✅ ซ่อน Checkbox เดิม*/
+.custom-checkbox input {
+    display: none;
+}
+
+/* ✅ ปรับไอคอนของ Checkbox */
+.custom-checkbox .material-icons {
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+/* ✅ เมื่อ Checkbox ถูกเลือกให้เปลี่ยนเป็นปุ่มสีน้ำเงิน */
+/* .custom-checkbox input:checked + span {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+} */
+
+/* ✅ ปรับไอคอนให้ชิดซ้ายของข้อความ */
+.material-icons {
+    font-size: 20px;
+    vertical-align: middle;
+    margin-right: 5px;
 }
 
 /* ✅ สไตล์ Highlight ของ Polygon */
@@ -75,5 +108,3 @@ body {
     stroke-width: 1px;
     fill-opacity: 0.1;
 }
-
-

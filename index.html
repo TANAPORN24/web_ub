@@ -6,6 +6,10 @@
     <title>ศูนย์อุตุนิยมวิทยาภาคตะวันออกเฉียงเหนือตอนล่าง</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- ✅ Import Material Icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
 </head>
 <body>
 
@@ -13,13 +17,42 @@
 
     <!-- ✅ บังคับให้ controls อยู่เสมอ -->
     <div class="controls" id="controls">
-        <label><input type="checkbox" id="toggleProvince" checked> แสดง Province</label>
-        <label><input type="checkbox" id="toggleDistrict"> แสดง District</label>
-        <label><input type="checkbox" id="toggleOpenStreetMap" checked> OpenStreetMap</label>
-        <label><input type="checkbox" id="toggleGoogleHybrid"> Google Hybrid</label>
-        <button id="toggleRadar">เริ่ม Loop ภาพเรดาร์</button>
-        <button id="locateUser">ไปยังตำแหน่งของฉัน</button>
+        <label class="custom-checkbox">
+            <input type="checkbox" id="toggleProvince" checked>
+            <span class="material-icons">map</span> แสดง Province
+        </label>
+    
+        <label class="custom-checkbox">
+            <input type="checkbox" id="toggleDistrict">
+            <span class="material-icons">location_city</span> แสดง District
+        </label>
+    
+        <label class="custom-checkbox">
+            <input type="checkbox" id="toggleOpenStreetMap" checked>
+            <span class="material-icons">layers</span> OpenStreetMap
+        </label>
+    
+        <label class="custom-checkbox">
+            <input type="checkbox" id="toggleGoogleHybrid">
+            <span class="material-icons">satellite</span> Google Hybrid
+        </label>
+    
+        <button id="zoomIn">
+            <span class="material-icons">zoom_in</span> Zoom In
+        </button>
+        <button id="zoomOut">
+            <span class="material-icons">zoom_out</span> Zoom Out
+        </button>
+        <button id="toggleRadar">
+            <span class="material-icons">loop</span> เริ่ม Loop ภาพเรดาร์
+        </button>
+        <button id="locateUser">
+            <span class="material-icons">my_location</span> ไปยังตำแหน่งของฉัน
+        </button>
     </div>
+    
+</div>
+
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>

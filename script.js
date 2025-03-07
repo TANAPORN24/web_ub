@@ -1,5 +1,7 @@
 /* ✅ ปักแมพเริ่มต้นที่ตำแหน่งที่กำหนด */ 
-var map = L.map('map').setView([15.42341669724746, 103.56871060013817], 7);
+var map = L.map('map', {
+    zoomControl: false  // ✅ ปิดปุ่ม Zoom In/Out ของ Leaflet
+}).setView([15.42341669724746, 103.56871060013817], 8);
 
 // เพิ่ม Base Map
 var openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -46,24 +48,55 @@ setInterval(() => {
     }
 }, 1000);
 
-// ✅ ปุ่ม Toggle Radar
+// ✅ ปุ่ม Toggle Radar พร้อมเปลี่ยนไอคอน
 document.getElementById("toggleRadar").addEventListener("click", function() {
     isLooping = !isLooping;
-    this.innerText = isLooping ? "หยุด Loop ภาพเรดาร์" : "เริ่ม Loop ภาพเรดาร์";
+    this.innerHTML = isLooping 
+        ? '<span class="material-icons">pause</span> หยุด Loop ภาพเรดาร์' 
+        : '<span class="material-icons">loop</span> เริ่ม Loop ภาพเรดาร์';
 });
+
+
+// ✅ ปุ่ม Zoom In
+document.getElementById("zoomIn").addEventListener("click", function() {
+    map.zoomIn();
+});
+
+// ✅ ปุ่ม Zoom Out
+document.getElementById("zoomOut").addEventListener("click", function() {
+    map.zoomOut();
+});
+
 
 // ✅ โหลดไฟล์ GeoJSON
 var provinceLayer, districtLayer;
 
-// Highlight Feature
+// ✅ ฟังก์ชัน Highlight Polygon ตอนวางเมาส์
 function highlightFeature(e) {
-    e.target.classList.add("highlighted");
+    var layer = e.target;
+    
+    if (!layer || !layer.setStyle) return; // ตรวจสอบว่ามีค่า layer ก่อนใช้
+
+    layer.setStyle({
+        weight: 3,
+        color: "#ff0000",  // เปลี่ยนเป็นสีแดงตอนวางเมาส์
+        fillOpacity: 0.3
+    });
 }
 
-// Reset Highlight
+// ✅ ฟังก์ชันคืนค่าเมื่อเมาส์ออกจาก Polygon
 function resetHighlight(e) {
-    e.target.classList.remove("highlighted");
+    var layer = e.target;
+
+    if (!layer || !layer.setStyle) return; // ตรวจสอบว่ามีค่า layer ก่อนใช้
+
+    layer.setStyle({
+        weight: 1, 
+        color: layer.feature?.properties?.layerType === "province" ? "#ff7800" : "#0078ff", 
+        fillOpacity: 0.1
+    });
 }
+
 
 // โหลดข้อมูลจังหวัด
 fetch('Geojson/province.geojson')
