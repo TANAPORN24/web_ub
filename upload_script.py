@@ -14,12 +14,8 @@ files_to_upload = [
 ]
 
 # เตรียมไฟล์สำหรับอัปโหลด
-files = {}
-for file_path in files_to_upload:
-    if os.path.exists(file_path):  # ตรวจสอบว่าไฟล์มีอยู่จริง
-        files[os.path.basename(file_path)] = open(file_path, 'rb')
-    else:
-        print(f"❌ ไม่พบไฟล์: {file_path}")
+files = {'file': open('C:/Users/Ubonmet/Documents/GitHub/web_ub/index.html', 'rb')}
+response = requests.post(url, files=files)
 
 # อัปโหลดไฟล์ไปยัง Joomla
 try:
