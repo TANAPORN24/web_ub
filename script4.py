@@ -99,26 +99,26 @@ existing_files = sorted(
     key=lambda x: int(os.path.splitext(x)[0])
 )
 
-# ตรวจสอบว่ามีไฟล์ 12.png หรือยัง
-has_full_12 = "12.png" in existing_files
+# ตรวจสอบว่ามีไฟล์ 9.png หรือยัง
+has_full_9 = "9.png" in existing_files
 
-if has_full_12:
-    # ถ้ามีครบ 12 ไฟล์แล้ว ให้ลบไฟล์ 1 และขยับลำดับ
+if has_full_9:
+    # ถ้ามีครบ 9 ไฟล์แล้ว ให้ลบไฟล์ 1 และขยับลำดับ
     os.remove(os.path.join(output_folder, "1.png"))
-    for i in range(2, 13):  # จาก 2.png -> 1.png, 3.png -> 2.png, ..., 12.png -> 11.png
+    for i in range(2, 10):  # จาก 2.png -> 1.png, 3.png -> 2.png, ..., 12.png -> 11.png
         old_path = os.path.join(output_folder, f"{i}.png")
         new_path = os.path.join(output_folder, f"{i-1}.png")
         if os.path.exists(old_path):
             os.rename(old_path, new_path)
 
-    next_number = 12  # ตั้งชื่อไฟล์ใหม่เป็น 12.png
+    next_number = 9  # ตั้งชื่อไฟล์ใหม่เป็น 12.png
 else:
-    # ถ้ายังไม่มีไฟล์ 12 ให้เพิ่มเลขจาก 1 ไปเรื่อย ๆ
+    # ถ้ายังไม่มีไฟล์ 9 ให้เพิ่มเลขจาก 1 ไปเรื่อย ๆ
     existing_numbers = []
     for file in existing_files:
         try:
             num = int(os.path.splitext(file)[0])
-            if 1 <= num <= 12:
+            if 1 <= num <= 9:
                 existing_numbers.append(num)
         except ValueError:
             pass
