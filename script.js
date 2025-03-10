@@ -1,35 +1,75 @@
 /* ✅ ปักแมพเริ่มต้นที่ตำแหน่งที่กำหนด */ 
 var map = L.map('map', {
-    zoomControl: false  // ✅ ปิดปุ่ม Zoom In/Out ของ Leaflet
+    zoomControl: false
 }).setView([15.42341669724746, 103.56871060013817], 8);
 
-// เพิ่ม Base Map
+// ✅ เพิ่ม Base Map
 var openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 });
-
 var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
     attribution: '&copy; Google Maps'
 });
 
-// เพิ่ม OpenStreetMap เป็นค่าเริ่มต้น
+// ✅ ตั้งค่าเริ่มต้น OpenStreetMap
 openStreetMap.addTo(map);
 
-// ฟังก์ชันเปิด/ปิด Base Layers
-document.getElementById("toggleOpenStreetMap").addEventListener("change", function() {
-    this.checked ? map.addLayer(openStreetMap) : map.removeLayer(openStreetMap);
+/* ✅ ฟังก์ชัน Toggle ปุ่ม */
+function toggleButtonState(button, isActive) {
+    button.classList.toggle("active", isActive);
+}
+
+/* ✅ เปิด/ปิด Base Layers */
+document.getElementById("toggleOpenStreetMap").addEventListener("click", function () {
+    if (map.hasLayer(openStreetMap)) {
+        map.removeLayer(openStreetMap);
+        toggleButtonState(this, false);
+    } else {
+        map.addLayer(openStreetMap);
+        toggleButtonState(this, true);
+    }
 });
 
-document.getElementById("toggleGoogleHybrid").addEventListener("change", function() {
-    this.checked ? map.addLayer(googleHybrid) : map.removeLayer(googleHybrid);
+document.getElementById("toggleGoogleHybrid").addEventListener("click", function () {
+    if (map.hasLayer(googleHybrid)) {
+        map.removeLayer(googleHybrid);
+        toggleButtonState(this, false);
+    } else {
+        map.addLayer(googleHybrid);
+        toggleButtonState(this, true);
+    }
 });
 
-// ✅ ดึงรายชื่อไฟล์ภาพเรดาร์จากโฟลเดอร์ output/
-var radarImages = Array.from({ length: 12 }, (_, i) => `output/${i + 1}.png`);
-var currentIndex = 0;
+// ✅ กำหนดตัวแปรหลัก
 var isLooping = false;
+var radarImages = [];
+var currentIndex = 0;
+var radarLayer = null;
 
-// ✅ พิกัดกึ่งกลางของเรดาร์และขอบเขต
+// ✅ กำหนดตัวแปรหลัก
+var isLooping = false;
+var radarImages = [];
+var currentIndex = 0;
+var radarLayer = null;
+
+// ✅ ฟังก์ชันโหลดภาพเรดาร์
+function loadRadarImages() {
+    fetch("get_images.php?t=" + new Date().getTime()) 
+        .then(response => response.json())
+        .then(data => {
+            if (data.length > 0) {
+                radarImages = data;
+                console.log("✅ โหลดภาพเรดาร์สำเร็จ:", radarImages);
+                currentIndex = 0;
+                updateRadarLayer();
+            } else {
+                console.error("⚠️ ไม่มีภาพเรดาร์ใน output/");
+            }
+        })
+        .catch(error => console.error("❌ เกิดข้อผิดพลาดในการโหลดภาพเรดาร์:", error));
+}
+
+// ✅ กำหนดขอบเขตของภาพเรดาร์
 var radarCenter = [17.156253703430906, 104.13320232083736]; 
 var radarRadiusKm = 250;
 var kmToLat = 1 / 111.32;
@@ -39,16 +79,31 @@ var radarBounds = [
     [radarCenter[0] - (radarRadiusKm * kmToLat), radarCenter[1] + (radarRadiusKm * kmToLon)]
 ];
 
-// ✅ เพิ่มภาพเรดาร์
-var radarLayer = L.imageOverlay(radarImages[currentIndex], radarBounds).addTo(map);
+// ✅ ฟังก์ชันอัปเดตภาพเรดาร์
+function updateRadarLayer() {
+    if (radarImages.length > 0) {
+        if (!radarLayer) {
+            radarLayer = L.imageOverlay(radarImages[currentIndex], radarBounds).addTo(map);
+        } else {
+            radarLayer.setUrl(radarImages[currentIndex]);
+        }
+    } else {
+        console.error("⚠️ ไม่มีไฟล์ภาพเรดาร์ให้โหลด!");
+    }
+}
+
+// ✅ เริ่มโหลดภาพเรดาร์
+loadRadarImages();
+
+// ✅ อัปเดตภาพเรดาร์แบบ Loop
 setInterval(() => {
-    if (isLooping) {
+    if (isLooping && radarImages.length > 0) {
         currentIndex = (currentIndex + 1) % radarImages.length;
-        radarLayer.setUrl(radarImages[currentIndex]);
+        updateRadarLayer();
     }
 }, 1000);
 
-// ✅ ปุ่ม Toggle Radar พร้อมเปลี่ยนไอคอน
+// ✅ ปุ่ม Toggle Radar
 document.getElementById("toggleRadar").addEventListener("click", function() {
     isLooping = !isLooping;
     this.innerHTML = isLooping 
@@ -56,6 +111,59 @@ document.getElementById("toggleRadar").addEventListener("click", function() {
         : '<span class="material-icons">loop</span> เริ่ม Loop ภาพเรดาร์';
 });
 
+
+/* ✅ โหลดไฟล์ GeoJSON */
+var provinceLayer, districtLayer;
+
+// ✅ โหลดข้อมูลจังหวัด
+fetch('Geojson/province.geojson')
+    .then(response => response.json())
+    .then(data => {
+        provinceLayer = L.geoJSON(data, {
+            style: { className: "province" },
+            onEachFeature: function (feature, layer) {
+                layer.bindTooltip(`<b>จังหวัด</b> ${feature.properties.ADM1_TH}`);
+            }
+        }).addTo(map);
+    });
+
+// ✅ โหลดข้อมูลอำเภอ
+fetch('Geojson/output_filtered.geojson')
+    .then(response => response.json())
+    .then(data => {
+        districtLayer = L.geoJSON(data, {
+            style: { className: "district" },
+            onEachFeature: function (feature, layer) {
+                layer.bindTooltip(`<b>อำเภอ</b> ${feature.properties.ADM2_TH}<br><b>จังหวัด</b> ${feature.properties.ADM1_TH}`);
+            }
+        });
+    });
+
+/* ✅ ปุ่ม Toggle Province */
+document.getElementById("toggleProvince").addEventListener("click", function () {
+    if (provinceLayer) {
+        if (map.hasLayer(provinceLayer)) {
+            map.removeLayer(provinceLayer);
+            toggleButtonState(this, false);
+        } else {
+            map.addLayer(provinceLayer);
+            toggleButtonState(this, true);
+        }
+    }
+});
+
+/* ✅ ปุ่ม Toggle District */
+document.getElementById("toggleDistrict").addEventListener("click", function () {
+    if (districtLayer) {
+        if (map.hasLayer(districtLayer)) {
+            map.removeLayer(districtLayer);
+            toggleButtonState(this, false);
+        } else {
+            map.addLayer(districtLayer);
+            toggleButtonState(this, true);
+        }
+    }
+});
 
 // ✅ ปุ่ม Zoom In
 document.getElementById("zoomIn").addEventListener("click", function() {
@@ -68,92 +176,7 @@ document.getElementById("zoomOut").addEventListener("click", function() {
 });
 
 
-// ✅ โหลดไฟล์ GeoJSON
-var provinceLayer, districtLayer;
-
-// ✅ ฟังก์ชัน Highlight Polygon ตอนวางเมาส์
-function highlightFeature(e) {
-    var layer = e.target;
-    
-    if (!layer || !layer.setStyle) return; // ตรวจสอบว่ามีค่า layer ก่อนใช้
-
-    layer.setStyle({
-        weight: 3,
-        color: "#ff0000",  // เปลี่ยนเป็นสีแดงตอนวางเมาส์
-        fillOpacity: 0.3
-    });
-}
-
-// ✅ ฟังก์ชันคืนค่าเมื่อเมาส์ออกจาก Polygon
-function resetHighlight(e) {
-    var layer = e.target;
-
-    if (!layer || !layer.setStyle) return; // ตรวจสอบว่ามีค่า layer ก่อนใช้
-
-    layer.setStyle({
-        weight: 1, 
-        color: layer.feature?.properties?.layerType === "province" ? "#ff7800" : "#0078ff", 
-        fillOpacity: 0.1
-    });
-}
-
-
-// โหลดข้อมูลจังหวัด
-fetch('Geojson/province.geojson')
-    .then(response => response.json())
-    .then(data => {
-        provinceLayer = L.geoJSON(data, {
-            style: { className: "province" },
-            onEachFeature: function (feature, layer) {
-                layer.bindTooltip(`<b>จังหวัด</b> ${feature.properties.ADM1_TH}`);
-                layer.on({ mouseover: highlightFeature, mouseout: resetHighlight });
-            }
-        }).addTo(map);
-    });
-
-// ✅ โหลดข้อมูลอำเภอ (แต่ยังไม่เพิ่มลงแผนที่)
-fetch('Geojson/output_filtered.geojson')
-    .then(response => response.json())
-    .then(data => {
-        districtLayer = L.geoJSON(data, {
-            style: { className: "district" },
-            onEachFeature: function (feature, layer) {
-                layer.bindTooltip(`<b>อำเภอ</b> ${feature.properties.ADM2_TH}<br><b>จังหวัด</b> ${feature.properties.ADM1_TH}`);
-                layer.on({ mouseover: highlightFeature, mouseout: resetHighlight });
-            }
-        });
-    });
-
-// ✅ ปิดเลเยอร์อำเภอไว้ก่อนและเปิดเมื่อกด checkbox
-document.getElementById("toggleDistrict").addEventListener("change", function() {
-    if (this.checked) {
-        map.addLayer(districtLayer);
-    } else {
-        map.removeLayer(districtLayer);
-    }
-});
-
-
-// ✅ ตรวจสอบว่ากล่องควบคุมถูกโหลดหรือไม่
-document.addEventListener("DOMContentLoaded", function() {
-    const controls = document.querySelector(".controls");
-    if (!controls) {
-        console.error("❌ Controls div is missing!");
-    } else {
-        controls.classList.remove("hidden");
-    }
-});
-
-// ✅ ฟังก์ชันเปิด/ปิดเลเยอร์
-document.getElementById("toggleProvince").addEventListener("change", function() {
-    this.checked ? map.addLayer(provinceLayer) : map.removeLayer(provinceLayer);
-});
-
-document.getElementById("toggleDistrict").addEventListener("change", function() {
-    this.checked ? map.addLayer(districtLayer) : map.removeLayer(districtLayer);
-});
-
-// ✅ ฟังก์ชันค้นหาตำแหน่งผู้ใช้
+/* ✅ ฟังก์ชันค้นหาตำแหน่งผู้ใช้ */
 function locateUser() {
     if (!navigator.geolocation) {
         alert("เบราว์เซอร์ของคุณไม่รองรับการระบุตำแหน่ง");
