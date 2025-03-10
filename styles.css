@@ -29,12 +29,12 @@ body {
     display: none !important;
 }
 
-/* ✅ ปรับขนาดปุ่มทั้งหมดให้เท่ากัน */
-.controls button, .custom-checkbox {
+/* ✅ ปรับสไตล์ปุ่ม Toggle */
+.controls button {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #007bff; /* สีพื้นหลังปุ่ม */
+    background-color: #007bff;
     color: white;
     border: none;
     padding: 12px;
@@ -50,8 +50,13 @@ body {
 }
 
 /* ✅ ปรับเอฟเฟกต์เมื่อ Hover */
-.controls button:hover, .custom-checkbox:hover {
+.controls button:hover {
     background-color: #0056b3;
+}
+
+/* ✅ ปุ่มที่เปิดใช้งานอยู่ (Active) */
+.controls button.active {
+    background-color: #28a745; /* สีเขียวเมื่อเปิดใช้งาน */
 }
 
 /* ✅ ปุ่มค้นหาตำแหน่งผู้ใช้ */
@@ -64,16 +69,16 @@ body {
 }
 
 
-/*✅ ซ่อน Checkbox เดิม*/
+/* ✅ ซ่อน Checkbox เดิม
 .custom-checkbox input {
     display: none;
-}
+} */
 
-/* ✅ ปรับไอคอนของ Checkbox */
+/* ✅ ปรับไอคอนของ Checkbox
 .custom-checkbox .material-icons {
     font-size: 18px;
     margin-right: 8px;
-}
+} */
 
 /* ✅ เมื่อ Checkbox ถูกเลือกให้เปลี่ยนเป็นปุ่มสีน้ำเงิน */
 /* .custom-checkbox input:checked + span {
