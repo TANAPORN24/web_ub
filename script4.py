@@ -1,13 +1,12 @@
-
 import requests
 from bs4 import BeautifulSoup
 import os
 import re
-from PIL import Image
+from PIL import Image, ImageChops
 import numpy as np
 
 # === STEP 1: กำหนดโฟลเดอร์และสร้างถ้ายังไม่มี ===
-drive_folder = "/content/drive/My Drive/Radar_Output"
+drive_folder = "Radar_Output"
 input_folder = "input"
 output_folder = "output"
 os.makedirs(drive_folder, exist_ok=True)
@@ -15,7 +14,7 @@ os.makedirs(input_folder, exist_ok=True)
 os.makedirs(output_folder, exist_ok=True)
 
 # === STEP 2: ดึงภาพ GIF จากเว็บไซต์ ===
-url = "https://weather.tmd.go.th/skn240_HQ_edit2.php" ########## ถ้าเรดาร์ใช้ได้แล้วเปลี่ยน URL ตรงนี้ ##########
+url = "https://weather.tmd.go.th/skn240_HQ_edit2.php"  # เปลี่ยน URL ถ้าเรดาร์ใช้ได้แล้ว
 
 response = requests.get(url)
 response.raise_for_status()
@@ -36,14 +35,37 @@ if gif_url:
     gif_filename = "skn240_HQ_latest.gif"
     gif_path = os.path.join(input_folder, gif_filename)
 
+    # ดาวน์โหลดไฟล์ GIF
     gif_response = requests.get(gif_url, stream=True)
-    with open(gif_path, "wb") as file:
-        for chunk in gif_response.iter_content(chunk_size=1024):
-            file.write(chunk)
+    
+    if gif_response.status_code == 200:
+        with open(gif_path, "wb") as file:
+            for chunk in gif_response.iter_content(chunk_size=1024):
+                file.write(chunk)
+        print(f"✅ ไฟล์ GIF ถูกบันทึกที่: {gif_path}")
+    else:
+        print(f"❌ ไม่สามารถดาวน์โหลดไฟล์ GIF ได้ (Status Code: {gif_response.status_code})")
+        exit()
 
-    print(f"✅ ไฟล์ GIF ถูกบันทึกที่: {gif_path}")
+    # === STEP 2.5: ตรวจสอบว่าภาพใหม่เหมือนภาพก่อนหน้าหรือไม่ ===
+    previous_gif_path = os.path.join(input_folder, "previous_skn240_HQ.gif")
 
-    # === STEP 3: ลบพื้นหลังและตัดภาพ ===
+    if os.path.exists(previous_gif_path):
+        old_image = Image.open(previous_gif_path).convert("RGB")
+        new_image = Image.open(gif_path).convert("RGB")
+        
+        diff = ImageChops.difference(old_image, new_image)
+        if diff.getbbox() is None:  # ถ้าภาพเหมือนกันหมด
+            print("🛑 ภาพเรดาร์ยังเหมือนเดิม หยุดการทำงาน")
+            exit()
+        else:
+            print("🔄 พบความแตกต่างในภาพเรดาร์ กำลังดำเนินการต่อ...")
+
+    # บันทึกไฟล์ใหม่เป็น previous เพื่อใช้เปรียบเทียบครั้งถัดไป
+    os.replace(gif_path, previous_gif_path)
+    gif_path = previous_gif_path  # ใช้ไฟล์ที่บันทึกแทน
+
+    # === STEP 3: ลบพื้นหลังและตัดภาพ (ห้ามเปลี่ยนแปลง) ===
     image = Image.open(gif_path).convert("RGBA")
     image_data = np.array(image)
 
@@ -52,7 +74,7 @@ if gif_url:
         return not (40 < r < 180 and 60 < g < 200 and 40 < b < 180)
 
     mask = np.apply_along_axis(is_rain_data, -1, image_data)
-    image_data[~mask] = [0, 0, 0, 0]  # พื้นที่ไม่ใช่เรดาร์ทำให้โปร่งใส
+    image_data[~mask] = [0, 0, 0, 0]
 
     blue_lower = np.array([0, 0, 100, 0])
     blue_upper = np.array([100, 255, 255, 255])
@@ -93,46 +115,36 @@ if gif_url:
     circular_rain_image.paste(cropped_image, (0, 0), circular_mask)
 
     # === STEP 4: จัดการชื่อไฟล์และขยับลำดับ ===
-    # ค้นหาไฟล์ที่มีอยู่ในโฟลเดอร์ output
-existing_files = sorted(
-    [f for f in os.listdir(output_folder) if f.endswith(".png")],
-    key=lambda x: int(os.path.splitext(x)[0])
-)
+    existing_files = sorted(
+        [f for f in os.listdir(output_folder) if f.endswith(".png")],
+        key=lambda x: int(os.path.splitext(x)[0])
+    )
 
-# ตรวจสอบว่ามีไฟล์ 9.png หรือยัง
-has_full_9 = "9.png" in existing_files
+    has_full_9 = "9.png" in existing_files
 
-if has_full_9:
-    # ถ้ามีครบ 9 ไฟล์แล้ว ให้ลบไฟล์ 1 และขยับลำดับ
-    os.remove(os.path.join(output_folder, "1.png"))
-    for i in range(2, 10):  # จาก 2.png -> 1.png, 3.png -> 2.png, ..., 12.png -> 11.png
-        old_path = os.path.join(output_folder, f"{i}.png")
-        new_path = os.path.join(output_folder, f"{i-1}.png")
-        if os.path.exists(old_path):
-            os.rename(old_path, new_path)
-
-    next_number = 9  # ตั้งชื่อไฟล์ใหม่เป็น 12.png
-else:
-    # ถ้ายังไม่มีไฟล์ 9 ให้เพิ่มเลขจาก 1 ไปเรื่อย ๆ
-    existing_numbers = []
-    for file in existing_files:
-        try:
-            num = int(os.path.splitext(file)[0])
-            if 1 <= num <= 9:
-                existing_numbers.append(num)
-        except ValueError:
-            pass
-
-    if existing_numbers:
-        next_number = max(existing_numbers) + 1  # เพิ่มทีละ 1
+    if has_full_9:
+        os.remove(os.path.join(output_folder, "1.png"))
+        for i in range(2, 10):
+            old_path = os.path.join(output_folder, f"{i}.png")
+            new_path = os.path.join(output_folder, f"{i-1}.png")
+            if os.path.exists(old_path):
+                os.rename(old_path, new_path)
+        next_number = 9
     else:
-        next_number = 1  # ถ้ายังไม่มีไฟล์เลยให้เริ่มที่ 1
+        existing_numbers = []
+        for file in existing_files:
+            try:
+                num = int(os.path.splitext(file)[0])
+                if 1 <= num <= 9:
+                    existing_numbers.append(num)
+            except ValueError:
+                pass
 
-# ตั้งชื่อไฟล์ใหม่
-output_filename = f"{next_number}.png"
-output_path = os.path.join(output_folder, output_filename)
+        next_number = max(existing_numbers) + 1 if existing_numbers else 1
 
-# บันทึกภาพที่ประมวลผลแล้ว
-circular_rain_image.save(output_path)
+    output_filename = f"{next_number}.png"
+    output_path = os.path.join(output_folder, output_filename)
 
-print(f"✅ บันทึกภาพเรดาร์ที่ประมวลผลแล้วที่: {output_path}")
+    circular_rain_image.save(output_path)
+
+    print(f"✅ บันทึกภาพเรดาร์ที่ประมวลผลแล้วที่: {output_path}")
