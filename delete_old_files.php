@@ -1,14 +1,17 @@
 <?php
-// กำหนดโฟลเดอร์ที่ต้องการลบไฟล์
-$folderPath = "https://ubonmet.tmd.go.th/upload_EX/output.php"; // เปลี่ยนเป็นพาธจริงของ Joomla
 
-// ตรวจสอบว่าโฟลเดอร์มีอยู่หรือไม่
+if (!isset($_GET['key']) || $_GET['key'] !== $secret_key) {
+    die("Unauthorized access.");
+}
+
+$folderPath = "output"; // เปลี่ยนเป็นพาธจริงของ Joomla
+
 if (is_dir($folderPath)) {
-    $files = glob($folderPath . "/*"); // ดึงรายการไฟล์ทั้งหมดในโฟลเดอร์
+    $files = glob($folderPath . "/*"); // ดึงรายการไฟล์ทั้งหมด
 
     foreach ($files as $file) {
         if (is_file($file)) {
-            unlink($file); // ลบไฟล์แต่ละไฟล์
+            unlink($file); // ลบไฟล์
             echo "Deleted: " . basename($file) . "\n";
         }
     }

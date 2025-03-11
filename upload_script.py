@@ -57,9 +57,6 @@ files_to_upload = [
     r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/7.png',
     r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/8.png',
     r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/9.png', 
-    # r'C:\Users\Ubonmet\Documents\GitHub\web_ub\index.html',
-    # r'C:\Users\Ubonmet\Documents\GitHub\web_ub\styles.css',
-    # r'C:\Users\Ubonmet\Documents\GitHub\web_ub\script.js'
 
 ]
 
@@ -84,5 +81,20 @@ for file_path in files_to_upload:
             print(f"เกิดข้อผิดพลาดในการอัปโหลด {filename}: {e}")
     else:
         print(f"ไม่พบไฟล์: {file_path}")
+
+# # อัปโหลดแต่ละไฟล์ตามลำดับ
+# for file_path in files_to_upload:
+#     if os.path.exists(file_path):  # ตรวจสอบว่าไฟล์มีอยู่จริง
+#         try:
+#             with open(file_path, 'rb') as file:
+#                 files = {'file': file}
+#                 response = requests.post(url, files=files)
+#                 print(f"อัปโหลด {os.path.basename(file_path)} สำเร็จ!")
+#                 print("Response Status Code:", response.status_code)
+#                 print("Response Content:", response.text)
+#         except Exception as e:
+#             print(f"เกิดข้อผิดพลาดในการอัปโหลด {os.path.basename(file_path)}: {e}")
+#     else:
+#         print(f"ไม่พบไฟล์: {file_path}")
 
 

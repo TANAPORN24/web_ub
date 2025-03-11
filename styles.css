@@ -9,11 +9,11 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     border: 2px solid #ccc;
+    position: relative; /* เพิ่ม position: relative */
 }
 
-/* ✅ ปรับตำแหน่งกล่องควบคุม */
 .controls {
-    position: absolute;
+    position: absolute; /* ให้อยู่ภายใน #map */
     top: 10px;
     right: 10px;
     background: rgba(255, 255, 255, 0.95);
@@ -21,7 +21,7 @@ body {
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     width: 200px;
-    z-index: 9999 !important;
+    z-index: 1000;
     pointer-events: auto;
 }
 
@@ -69,23 +69,7 @@ body {
 }
 
 
-/* ✅ ซ่อน Checkbox เดิม
-.custom-checkbox input {
-    display: none;
-} */
 
-/* ✅ ปรับไอคอนของ Checkbox
-.custom-checkbox .material-icons {
-    font-size: 18px;
-    margin-right: 8px;
-} */
-
-/* ✅ เมื่อ Checkbox ถูกเลือกให้เปลี่ยนเป็นปุ่มสีน้ำเงิน */
-/* .custom-checkbox input:checked + span {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
-} */
 
 /* ✅ ปรับไอคอนให้ชิดซ้ายของข้อความ */
 .material-icons {
@@ -112,4 +96,18 @@ body {
     stroke: #0078ff;
     stroke-width: 1px;
     fill-opacity: 0.1;
+}
+
+@media (max-width: 500px) {
+    .controls {
+        width: 120px; 
+        right: 5px;
+        top: 5px;
+        padding: 8px;
+    }
+
+    .controls button {
+        font-size: 12px;
+        padding: 8px;
+    }
 }
