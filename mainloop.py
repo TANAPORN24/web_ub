@@ -33,5 +33,5 @@ while True:
         print(f"Error occurred while running {script3}: {e}")
 
     # ✅ รอเวลาที่เหลืออีก 4 นาที (รวมทั้งหมดเป็น 5 นาที)
-    print("Waiting 14 minutes before next cycle...")
+    print("Waiting 4 minutes before next cycle...")
     time.sleep(240) 
