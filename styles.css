@@ -13,17 +13,18 @@ body {
 }
 
 .controls {
-    position: absolute; /* ให้อยู่ภายใน #map */
-    top: 10px;
-    right: 10px;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    width: 200px;
+    position: absolute;
+    top: clamp(10px, 2%, 40px); /* ลดระยะห่างจากขอบบน */
+    left: clamp(10px, 2%, 40px); /* ลดระยะห่างจากขอบซ้าย */
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px; /* ลดขนาด padding */
+    border-radius: 4px; /* ลดความโค้งของขอบ */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    width: 160px; /* ลดขนาดความกว้างจาก 200px -> 160px */
     z-index: 1000;
     pointer-events: auto;
 }
+
 
 .controls.hidden {
     display: none !important;
@@ -31,23 +32,24 @@ body {
 
 /* ✅ ปรับสไตล์ปุ่ม Toggle */
 .controls button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 12px;
-    font-size: 16px;
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    transition: all 0.3s;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    font-weight: bold;
+    display: flex;               /* ใช้ Flexbox จัดให้อยู่กึ่งกลาง */
+    align-items: center;         /* จัดให้อยู่ตรงกลางแนวตั้ง */
+    justify-content: center;     /* จัดให้อยู่ตรงกลางแนวนอน */
+    background-color: #007bff;   /* พื้นหลังสีน้ำเงิน */
+    color: white;                /* ตัวอักษรสีขาว */
+    border: none;                /* ไม่มีเส้นขอบ */
+    padding: 8px;               /* เพิ่มขนาดภายในปุ่ม */
+    font-size: 14px;             /* กำหนดขนาดตัวอักษร */
+    cursor: pointer;             /* เปลี่ยนเมาส์เป็น Pointer */
+    width: 100%;                 /* ปุ่มเต็มความกว้างของ .controls */
+    text-align: center;          /* จัดข้อความอยู่ตรงกลาง */
+    border-radius: 4px;          /* ทำให้ปุ่มมีมุมโค้ง */
+    margin-bottom: 4px;          /* เพิ่มระยะห่างระหว่างปุ่ม */
+    transition: all 0.3s;        /* เพิ่มเอฟเฟกต์แอนิเมชัน */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* ใส่เงาให้ปุ่ม */
+    font-weight: bold;           /* ทำให้ข้อความตัวหนา */
 }
+
 
 /* ✅ ปรับเอฟเฟกต์เมื่อ Hover */
 .controls button:hover {
@@ -67,9 +69,6 @@ body {
 #locateUser:hover {
     background-color: #27602a;
 }
-
-
-
 
 /* ✅ ปรับไอคอนให้ชิดซ้ายของข้อความ */
 .material-icons {

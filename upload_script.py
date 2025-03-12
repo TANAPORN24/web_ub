@@ -57,12 +57,10 @@ files_to_upload = [
     r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/7.png',
     r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/8.png',
     r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/9.png', 
-
 ]
 
 # ดึง timestamp ปัจจุบัน
 timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-
 # อัปโหลดแต่ละไฟล์โดยเพิ่ม timestamp
 for file_path in files_to_upload:
     if os.path.exists(file_path):  # ตรวจสอบว่าไฟล์มีอยู่จริง

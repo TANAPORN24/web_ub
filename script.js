@@ -12,33 +12,71 @@ var googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={
 });
 
 // ✅ ตั้งค่าเริ่มต้น OpenStreetMap
-openStreetMap.addTo(map);
+// openStreetMap.addTo(map);
 
 /* ✅ ฟังก์ชัน Toggle ปุ่ม */
-function toggleButtonState(button, isActive) {
-    button.classList.toggle("active", isActive);
-}
+// function toggleButtonState(button, isActive) {
+//     button.classList.toggle("active", isActive);
+// }
 
 /* ✅ เปิด/ปิด Base Layers */
-document.getElementById("toggleOpenStreetMap").addEventListener("click", function () {
-    if (map.hasLayer(openStreetMap)) {
-        map.removeLayer(openStreetMap);
-        toggleButtonState(this, false);
+// document.getElementById("toggleOpenStreetMap").addEventListener("click", function () {
+//     if (map.hasLayer(openStreetMap)) {
+//         map.removeLayer(openStreetMap);
+//         toggleButtonState(this, false);
+//     } else {
+//         map.addLayer(openStreetMap);
+//         toggleButtonState(this, true);
+//     }
+// });
+
+// document.getElementById("toggleGoogleHybrid").addEventListener("click", function () {
+//     if (map.hasLayer(googleHybrid)) {
+//         map.removeLayer(googleHybrid);
+//         toggleButtonState(this, false);
+//     } else {
+//         map.addLayer(googleHybrid);
+//         toggleButtonState(this, true);
+//     }
+// });
+
+// ฟังก์ชันเปลี่ยนสถานะของปุ่มและเลเยอร์
+function toggleBaseLayer(activeButton, inactiveButton, activeLayer, inactiveLayer) {
+    if (map.hasLayer(activeLayer)) {
+        // ถ้าเลเยอร์เปิดอยู่ -> ให้ปิด
+        map.removeLayer(activeLayer);
+        toggleButtonState(activeButton, false);
     } else {
-        map.addLayer(openStreetMap);
-        toggleButtonState(this, true);
+        // ถ้าเลเยอร์ปิดอยู่ -> เปิดเลเยอร์ใหม่ และปิดอีกเลเยอร์
+        map.removeLayer(inactiveLayer);
+        map.addLayer(activeLayer);
+        toggleButtonState(activeButton, true);
+        toggleButtonState(inactiveButton, false);
     }
+}
+
+// เพิ่ม Event Listener สำหรับปุ่ม OpenStreetMap
+document.getElementById("toggleOpenStreetMap").addEventListener("click", function () {
+    toggleBaseLayer(this, document.getElementById("toggleGoogleHybrid"), openStreetMap, googleHybrid);
 });
 
+// เพิ่ม Event Listener สำหรับปุ่ม Google Hybrid
 document.getElementById("toggleGoogleHybrid").addEventListener("click", function () {
-    if (map.hasLayer(googleHybrid)) {
-        map.removeLayer(googleHybrid);
-        toggleButtonState(this, false);
-    } else {
-        map.addLayer(googleHybrid);
-        toggleButtonState(this, true);
-    }
+    toggleBaseLayer(this, document.getElementById("toggleOpenStreetMap"), googleHybrid, openStreetMap);
 });
+
+// ตั้งค่าเริ่มต้น: เปิด Google Hybrid
+map.addLayer(googleHybrid);
+toggleButtonState(document.getElementById("toggleGoogleHybrid"), true);
+toggleButtonState(document.getElementById("toggleOpenStreetMap"), false);
+
+function toggleButtonState(button, isActive) {
+    if (isActive) {
+        button.classList.add("active");
+    } else {
+        button.classList.remove("active");
+    }
+}
 
 // ✅ กำหนดตัวแปรหลัก
 var isLooping = false;
