@@ -14,7 +14,8 @@ os.makedirs(input_folder, exist_ok=True)
 os.makedirs(output_folder, exist_ok=True)
 
 # === STEP 2: ดึงภาพ GIF จากเว็บไซต์ ===
-url = "https://weather.tmd.go.th/skn240_HQ_edit2.php"  # เปลี่ยน URL ถ้าเรดาร์ใช้ได้แล้ว
+url = "https://weather.tmd.go.th/skn240_HQ_edit2.php"  
+##### เปลี่ยน URL ถ้าเรดาร์ใช้ได้แล้ว หมายเหตุ: ต้องเป็น TMD Radar High Quality เท่านั้น #########
 
 response = requests.get(url)
 response.raise_for_status()

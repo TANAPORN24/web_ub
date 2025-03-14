@@ -3,7 +3,7 @@ header('Content-Type: application/json');
 
 // ตรวจสอบว่าได้รับคำขอจาก Python หรือไม่
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $folder = "output/"; // 🔹 เปลี่ยนเส้นทางให้ถูกต้อง
+    $folder = "output/"; // 
     $files = glob($folder . "*.png");
 
     if ($files !== false) {
