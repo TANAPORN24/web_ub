@@ -4,64 +4,106 @@ body {
 }
 
 #map {
-    width: 100%;
+    width: 69%;
     height: 500px;
     max-width: 1200px;
-    margin: 0 auto;
     border: 2px solid #ccc;
-    position: relative; /* เพิ่ม position: relative */
 }
 
+.leaflet-image-layer {
+    opacity: 0.75 !important; /* ทำให้สีจางลง 25% */
+}
+
+/* ภาพสเกล */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 10px;
+}
+#image-container {
+    width: 30%;
+    max-width: 55px;
+    height: 500px;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    transform: translateX(-45px);
+}
+
+#image-container img {
+    max-width: 284%;  
+    max-height: 100%; 
+    object-fit: contain;
+}
+
+/* ปุ่มเมนู (Hamburger) */
+.menu-button {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 10001;
+    display: none; /* ซ่อนปุ่มในหน้าจอปกติ */
+}
+
+/*  ปรับตำแหน่งกล่องควบคุม */
 .controls {
     position: absolute;
-    top: clamp(10px, 2%, 40px); /* ลดระยะห่างจากขอบบน */
-    left: clamp(10px, 2%, 40px); /* ลดระยะห่างจากขอบซ้าย */
-    background: rgba(255, 255, 255, 0.9);
-    padding: 8px; /* ลดขนาด padding */
-    border-radius: 4px; /* ลดความโค้งของขอบ */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    width: 160px; /* ลดขนาดความกว้างจาก 200px -> 160px */
-    z-index: 1000;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    width: 200px;
+    z-index: 9999 !important;
     pointer-events: auto;
-}
 
+}
 
 .controls.hidden {
     display: none !important;
 }
 
-/* ✅ ปรับสไตล์ปุ่ม Toggle */
+/*  ปรับสไตล์ปุ่ม Toggle */
 .controls button {
-    display: flex;               /* ใช้ Flexbox จัดให้อยู่กึ่งกลาง */
-    align-items: center;         /* จัดให้อยู่ตรงกลางแนวตั้ง */
-    justify-content: center;     /* จัดให้อยู่ตรงกลางแนวนอน */
-    background-color: #007bff;   /* พื้นหลังสีน้ำเงิน */
-    color: white;                /* ตัวอักษรสีขาว */
-    border: none;                /* ไม่มีเส้นขอบ */
-    padding: 8px;               /* เพิ่มขนาดภายในปุ่ม */
-    font-size: 14px;             /* กำหนดขนาดตัวอักษร */
-    cursor: pointer;             /* เปลี่ยนเมาส์เป็น Pointer */
-    width: 100%;                 /* ปุ่มเต็มความกว้างของ .controls */
-    text-align: center;          /* จัดข้อความอยู่ตรงกลาง */
-    border-radius: 4px;          /* ทำให้ปุ่มมีมุมโค้ง */
-    margin-bottom: 4px;          /* เพิ่มระยะห่างระหว่างปุ่ม */
-    transition: all 0.3s;        /* เพิ่มเอฟเฟกต์แอนิเมชัน */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* ใส่เงาให้ปุ่ม */
-    font-weight: bold;           /* ทำให้ข้อความตัวหนา */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
 }
 
-
-/* ✅ ปรับเอฟเฟกต์เมื่อ Hover */
+/*  ปรับเอฟเฟกต์เมื่อ Hover */
 .controls button:hover {
     background-color: #0056b3;
 }
 
-/* ✅ ปุ่มที่เปิดใช้งานอยู่ (Active) */
+/*  ปุ่มที่เปิดใช้งานอยู่ (Active) */
 .controls button.active {
     background-color: #28a745; /* สีเขียวเมื่อเปิดใช้งาน */
 }
 
-/* ✅ ปุ่มค้นหาตำแหน่งผู้ใช้ */
+/*  ปุ่มค้นหาตำแหน่งผู้ใช้ */
 #locateUser {
     background-color: #39972b;
 }
@@ -70,21 +112,21 @@ body {
     background-color: #27602a;
 }
 
-/* ✅ ปรับไอคอนให้ชิดซ้ายของข้อความ */
+/*  ปรับไอคอนให้ชิดซ้ายของข้อความ */
 .material-icons {
     font-size: 20px;
     vertical-align: middle;
     margin-right: 5px;
 }
 
-/* ✅ สไตล์ Highlight ของ Polygon */
+/* สไตล์ Highlight ของ Polygon */
 .highlighted {
     stroke-width: 3px;
     stroke: #ff0000;
     fill-opacity: 0.3;
 }
 
-/* ✅ สไตล์จังหวัดและอำเภอ */
+/* สไตล์จังหวัดและอำเภอ */
 .province {
     stroke: #ff7800;
     stroke-width: 2px;
@@ -97,16 +139,58 @@ body {
     fill-opacity: 0.1;
 }
 
-@media (max-width: 500px) {
+/*  ปรับตำแหน่งกล่องควบคุม */
+@media (max-width: 650px) {
+    #image-container {
+        max-width: 80px; /* ลดขนาดลง */
+        transform: translateX(0); /* เอาการเลื่อนออก */
+    }
+
+    #image-container img {
+        width: 150%;
+        height: 500px;
+        object-fit: contain;
+    }
+    #map {
+        width: 70%;
+        height: 500px;
+        max-width: 900px;
+        border: 2px solid #ccc;
+    }
+}
+@media (max-width: 768px) {
+    .menu-button {
+        display: block;
+    }
+    /* ซ่อน controls เริ่มต้นในหน้าจอเล็ก */
+    .controls {
+        display: none;
+        position: fixed;
+        top: 200px; /* ปรับจาก 60px เป็น 80px เพื่อขยับลงมา */
+        right: -220px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        width: 180px;
+        z-index: 1000 !important;
+        transition: right 0.3s ease-in-out;
+    }
+
+    /* แสดง controls เมื่อ active */
+    .controls.active {
+        display: block;
+    }
+
     .controls {
         width: 120px; 
-        right: 5px;
-        top: 5px;
-        padding: 8px;
+        right: 10px;
+        top: 55px;
+        padding: 5px;
     }
 
     .controls button {
-        font-size: 12px;
-        padding: 8px;
+        font-size: 8px;
+        padding: 5px;
     }
 }
