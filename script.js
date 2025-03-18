@@ -125,7 +125,7 @@ document.getElementById("toggleRadar").addEventListener("click", function() {
 /*  โหลดไฟล์ GeoJSON */
 var provinceLayer, districtLayer;
 
-//  โหลดข้อมูลจังหวัด
+// โหลดข้อมูลจังหวัด
 fetch('Geojson/province.geojson')
     .then(response => response.json())
     .then(data => {
@@ -134,8 +134,10 @@ fetch('Geojson/province.geojson')
             onEachFeature: function (feature, layer) {
                 layer.bindTooltip(`<b>จังหวัด</b> ${feature.properties.ADM1_TH}`);
             }
-        }).addTo(map);
+        }).addTo(map); // เพิ่มเลเยอร์จังหวัดตั้งแต่เริ่มต้น
+        toggleButtonState(document.getElementById("toggleProvince"), true);
     });
+
 
 //  โหลดข้อมูลอำเภอ
 fetch('Geojson/output_filtered.geojson')
