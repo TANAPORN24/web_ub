@@ -48,15 +48,25 @@ url = 'https://ubonmet.tmd.go.th/upload_EX/upload.php'
 
 # ระบุไฟล์ที่ต้องการอัปโหลด
 files_to_upload = [
-    r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/1.png',
-    r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/2.png',
-    r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/3.png',
-    r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/4.png',
-    r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/5.png',
-    r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/6.png',
-    r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/7.png',
-    r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/8.png',
-    r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/9.png', 
+    # r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/1.png',
+    # r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/2.png',
+    # r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/3.png',
+    # r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/4.png',
+    # r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/5.png',
+    # r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/6.png',
+    # r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/7.png',
+    # r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/8.png',
+    # r'C:\Users\Ubonmet\Documents\GitHub\web_ub\output/9.png', 
+    r'D:\Work\git\web_ub\output/1.png',
+    r'D:\Work\git\web_ub\output/2.png',
+    r'D:\Work\git\web_ub\output/3.png',
+    r'D:\Work\git\web_ub\output/4.png',
+    r'D:\Work\git\web_ub\output/5.png',
+    r'D:\Work\git\web_ub\output/6.png',
+    r'D:\Work\git\web_ub\output/7.png',
+    r'D:\Work\git\web_ub\output/8.png',
+    r'D:\Work\git\web_ub\output/9.png', 
+    
 ]
 
 # ดึง timestamp ปัจจุบัน

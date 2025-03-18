@@ -2,7 +2,7 @@ import time
 import subprocess
 
 # กำหนดชื่อไฟล์ Python ที่ต้องการรัน
-script1 = "script4.py"  
+script1 = "script1.py"  
 script2 = "delete_from_joomla.py"   
 script3 = "upload_script.py" 
 
