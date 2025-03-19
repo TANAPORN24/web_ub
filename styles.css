@@ -11,7 +11,7 @@ body {
 }
 
 .leaflet-image-layer {
-    opacity: 0.75 !important; /* ทำให้สีจางลง 25% */
+    opacity: 0.75 !important; /*ทำให้สีเรดาร์จางลง*/
 }
 
 /* ภาพสเกล */
@@ -51,7 +51,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     z-index: 10001;
-    display: none; /* ซ่อนปุ่มในหน้าจอปกติ */
+    display: none; 
 }
 
 /*  ปรับตำแหน่งกล่องควบคุม */
@@ -100,7 +100,7 @@ body {
 
 /*  ปุ่มที่เปิดใช้งานอยู่ (Active) */
 .controls button.active {
-    background-color: #28a745; /* สีเขียวเมื่อเปิดใช้งาน */
+    background-color: #28a745; 
 }
 
 /*  ปุ่มค้นหาตำแหน่งผู้ใช้ */

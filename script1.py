@@ -25,7 +25,7 @@ gif_url = None
 for img in soup.find_all("img"):
     if ".gif" in img["src"]:
         gif_url = img["src"]
-        break  # เอาไฟล์แรกที่เจอ
+        break  
 
 if gif_url:
     if not gif_url.startswith("http"):

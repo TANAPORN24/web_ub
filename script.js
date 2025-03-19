@@ -81,7 +81,7 @@ function loadRadarImages() {
 
 //  กำหนดขอบเขตของภาพเรดาร์
 var radarCenter = [17.156253703430906, 104.13320232083736];//*****กรณีเรดาร์อุบลใช้ได้แล้วให้ใส่พิกัดนี้แทน [15.245197761623547, 104.87098075473182]*****//
-var radarRadiusKm = 250; //**รัศมีทำการ เพื่อประมาณ 10 กม. จากค่าจริง**//
+var radarRadiusKm = 250; //**รัศมีทำการ**//
 var kmToLat = 1 / 111.32;
 var kmToLon = 1 / (111.32 * Math.cos(radarCenter[0] * Math.PI / 180));
 var radarBounds = [
@@ -121,7 +121,6 @@ document.getElementById("toggleRadar").addEventListener("click", function() {
         : '<span class="material-icons">loop</span> เริ่ม Loop ภาพเรดาร์';
 });
 
-
 /*  โหลดไฟล์ GeoJSON */
 var provinceLayer, districtLayer;
 
@@ -137,7 +136,6 @@ fetch('Geojson/province.geojson')
         }).addTo(map); // เพิ่มเลเยอร์จังหวัดตั้งแต่เริ่มต้น
         toggleButtonState(document.getElementById("toggleProvince"), true);
     });
-
 
 //  โหลดข้อมูลอำเภอ
 fetch('Geojson/output_filtered.geojson')
@@ -161,7 +159,6 @@ document.getElementById("menu-toggle").addEventListener("click", function () {
         ? '<span class="material-icons">close</span>' 
         : '<span class="material-icons">menu</span>';
 });
-
 
 /*  ปุ่ม Toggle Province */
 document.getElementById("toggleProvince").addEventListener("click", function () {
@@ -198,7 +195,6 @@ document.getElementById("zoomIn").addEventListener("click", function() {
 document.getElementById("zoomOut").addEventListener("click", function() {
     map.zoomOut();
 });
-
 
 /*  ฟังก์ชันค้นหาตำแหน่งผู้ใช้ */
 function locateUser() {
